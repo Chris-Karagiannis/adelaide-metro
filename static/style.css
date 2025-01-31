@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+}
+
+#map { 
+    height: 100vh;
+    width: 100%;
+}
+
+#refreshButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    z-index: 400;
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    border-color: rgb(204, 204, 204);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: default;
+}
+
+#refreshButton:hover {
+    background-color: rgb(244, 244, 244);
+    cursor: pointer;
+}
