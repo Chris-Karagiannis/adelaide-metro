@@ -1,7 +1,6 @@
 from google.transit import gtfs_realtime_pb2
 import requests
 import csv
-import os
 
 url = 'https://gtfs.adelaidemetro.com.au/v1/realtime/vehicle_positions'
 
@@ -23,7 +22,7 @@ def fetch_transport_data(root_path):
     feed = gtfs_realtime_pb2.FeedMessage()
     response = requests.get(url)
     feed.ParseFromString(response.content)
-    print(feed)
+    # print(feed)
     data = {"vehicles":[]}
     route_data = get_route_data(root_path)
 

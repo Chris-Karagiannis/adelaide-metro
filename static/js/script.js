@@ -1,4 +1,4 @@
-// Centre map on Adelaide
+// Centre map on Adelaide or get previous position from local storage
 const lat = localStorage.getItem('lat') ? localStorage.getItem('lat') : -34.9285;
 const lng = localStorage.getItem('lng') ? localStorage.getItem('lng') : 138.6007;
 const zoom = localStorage.getItem('zoom') ? localStorage.getItem('zoom') : 10;
@@ -20,6 +20,8 @@ map.on('moveend', (e) => {
 
 // Add markers to map for vehicles
 for (let i = 0; i < transportData.vehicles.length; i++) {
+
+    // Add marker for vehicle
     const vehicle = L.marker([transportData.vehicles[i].latitude, transportData.vehicles[i].longitude], {
         icon: new L.DivIcon({
         iconSize: [40, 40],
@@ -31,6 +33,7 @@ for (let i = 0; i < transportData.vehicles.length; i++) {
     // Set colour of vehicle per route data
     document.getElementById(i).style.color = `#${transportData.vehicles[i].route_data.colour}`
     
+    // Get date and time of last update of vehicle
     const date = new Date(transportData.vehicles[i].time * 1000)
 
     // Marker popup with info
@@ -39,7 +42,7 @@ for (let i = 0; i < transportData.vehicles.length; i++) {
         <br>
         <sub>${date.toLocaleString('en-AU')}</sub>
     `)
-
+    
     // Click event
     vehicle.on('click', (e) => {
         map.setView(e.latlng, 16);
