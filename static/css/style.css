@@ -26,3 +26,18 @@ body {
     background-color: rgb(244, 244, 244);
     cursor: pointer;
 }
+
+.marker-container {
+    display: grid;
+    place-items: center;
+}
+
+.marker {
+    position: absolute;
+}
+
+.tooltip-route {
+    font-size: large;
+    padding: 5px;
+    color: white;
+}

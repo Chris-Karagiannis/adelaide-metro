@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    data = fetch_transport_data()
+    data = fetch_transport_data(app.root_path)
     return render_template("index.jinja", transport_data=data)
 
 if __name__ == "__main__":
