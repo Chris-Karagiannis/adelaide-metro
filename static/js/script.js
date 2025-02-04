@@ -44,7 +44,8 @@ function processData(transportData) {
         
         // Click event
         vehicle.on('click', (e) => {
-            map.setView(e.latlng, 16);
+            const zoom = map.getZoom() >= 16 ? map.getZoom() : 16;
+            map.setView(e.latlng, zoom);
         })
 
     }
@@ -52,6 +53,9 @@ function processData(transportData) {
 
 // Fetch vehicle data
 fetchData();
+
+// Fetch every 20 seconds
+setInterval(fetchData, 20000)
 
 // Refresh button
 const refreshButton = document.getElementById("refreshButton")

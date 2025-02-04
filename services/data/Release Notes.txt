@@ -1,0 +1,6 @@
+Adelaide Metro GTFS Release Notes
+
+General Amendments:
+
+1)	Adjusted service_ids of some trips (this is prep work for the April school holidays).
+2)	Corrected minor issue with routes 600, 196F and 400 where certain trips were not displayed as servicing schools.
