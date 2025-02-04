@@ -10,12 +10,7 @@
 </head>
 <body>
     <div id="map"></div>
-    <button id="refreshButton" onclick="location.reload();" title="Refresh"><i class="fa fa-refresh"></i></button>
-    <script>
-        // Bring in transport data from backend
-        const transportData = {{ transport_data | tojson }};
-    </script>
+    <button id="refreshButton" title="Refresh"><i class="fa fa-refresh"></i></button>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    
 </body>
 </html>

@@ -22,8 +22,9 @@ def fetch_transport_data(root_path):
     feed = gtfs_realtime_pb2.FeedMessage()
     response = requests.get(url)
     feed.ParseFromString(response.content)
-    # print(feed)
-    data = {"vehicles":[]}
+    data = {
+        "vehicles":[]
+    }
     route_data = get_route_data(root_path)
 
     for entity in feed.entity:

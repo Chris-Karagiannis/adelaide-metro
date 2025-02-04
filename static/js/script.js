@@ -1,3 +1,65 @@
+async function fetchData() {
+    try {
+        let response = await fetch('/api/data');
+        let data = await response.json();
+        processData(data)
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+function processData(transportData) {
+
+    // Clear previous markers
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Add markers to map for vehicles
+    for (let i = 0; i < transportData.vehicles.length; i++) {
+
+        // Add marker for vehicle
+        const vehicle = L.marker([transportData.vehicles[i].latitude, transportData.vehicles[i].longitude], {
+            icon: new L.DivIcon({
+            iconSize: [40, 40],
+            className: "marker-container",
+            html: `<i class="fa fa-circle fa-2x marker" id="${i}" aria-hidden="true"></i>
+                    <i class="fa fa-arrow-up marker" style="color:white; transform: rotate(${transportData.vehicles[i].bearing}deg)" id="${i}" aria-hidden="true"></i>`
+        })}).addTo(map);
+
+        // Set colour of vehicle per route data
+        document.getElementById(i).style.color = `#${transportData.vehicles[i].route_data.colour}`
+        
+        // Get date and time of last update of vehicle
+        const date = new Date(transportData.vehicles[i].time * 1000)
+
+        // Marker popup with info
+        vehicle.bindTooltip(`
+            <strong class="tooltip-route" style="background-color:#${transportData.vehicles[i].route_data.colour};">${transportData.vehicles[i].route}</strong> ${transportData.vehicles[i].route_data.name}
+            <br>
+            <sub>${date.toLocaleString('en-AU')}</sub>
+        `)
+        
+        // Click event
+        vehicle.on('click', (e) => {
+            map.setView(e.latlng, 16);
+        })
+
+    }
+}
+
+// Fetch vehicle data
+fetchData();
+
+// Refresh button
+const refreshButton = document.getElementById("refreshButton")
+
+refreshButton.addEventListener('click', () => {
+    fetchData();
+})
+
 // Centre map on Adelaide or get previous position from local storage
 const lat = localStorage.getItem('lat') ? localStorage.getItem('lat') : -34.9285;
 const lng = localStorage.getItem('lng') ? localStorage.getItem('lng') : 138.6007;
@@ -17,37 +79,6 @@ map.on('moveend', (e) => {
     localStorage.setItem('lat', map.getCenter().lat)
     localStorage.setItem('lng', map.getCenter().lng)
 })
-
-// Add markers to map for vehicles
-for (let i = 0; i < transportData.vehicles.length; i++) {
-
-    // Add marker for vehicle
-    const vehicle = L.marker([transportData.vehicles[i].latitude, transportData.vehicles[i].longitude], {
-        icon: new L.DivIcon({
-        iconSize: [40, 40],
-        className: "marker-container",
-        html: `<i class="fa fa-circle fa-2x marker" id="${i}" aria-hidden="true"></i>
-               <i class="fa fa-arrow-up marker" style="color:white; transform: rotate(${transportData.vehicles[i].bearing}deg)" id="${i}" aria-hidden="true"></i>`
-    })}).addTo(map);
-
-    // Set colour of vehicle per route data
-    document.getElementById(i).style.color = `#${transportData.vehicles[i].route_data.colour}`
-    
-    // Get date and time of last update of vehicle
-    const date = new Date(transportData.vehicles[i].time * 1000)
-
-    // Marker popup with info
-    vehicle.bindTooltip(`
-        <strong class="tooltip-route" style="background-color:#${transportData.vehicles[i].route_data.colour};">${transportData.vehicles[i].route}</strong> ${transportData.vehicles[i].route_data.name}
-        <br>
-        <sub>${date.toLocaleString('en-AU')}</sub>
-    `)
-    
-    // Click event
-    vehicle.on('click', (e) => {
-        map.setView(e.latlng, 16);
-    })
-}
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     minZoom: 9,
