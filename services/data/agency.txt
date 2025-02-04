@@ -1,5 +1,5 @@
 agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url
-2,Adelaide Metro (Keolis Downer),https://www.adelaidemetro.com.au/,Australia/Adelaide,EN,1300 311 108,https://www.adelaidemetro.com.au/tickets-and-fares/adelaide-metro-fares
+2,Adelaide Metro (Rail Commissioner),https://www.adelaidemetro.com.au/,Australia/Adelaide,EN,1300 311 108,https://www.adelaidemetro.com.au/tickets-and-fares/adelaide-metro-fares
 3,Adelaide Metro (Torrens Connect),https://www.adelaidemetro.com.au/,Australia/Adelaide,EN,1300 311 108,https://www.adelaidemetro.com.au/tickets-and-fares/adelaide-metro-fares
 4,Adelaide Metro (SouthLink),https://www.adelaidemetro.com.au/,Australia/Adelaide,EN,1300 311 108,https://www.adelaidemetro.com.au/tickets-and-fares/adelaide-metro-fares
 41,Adelaide Metro (School Service - SouthLink),https://www.adelaidemetro.com.au/,Australia/Adelaide,EN,1300 311 108,https://www.adelaidemetro.com.au/tickets-and-fares/adelaide-metro-fares

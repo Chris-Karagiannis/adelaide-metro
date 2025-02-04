@@ -1,9 +1,7 @@
 from google.transit import gtfs_realtime_pb2
 import requests, zipfile, io, csv, os.path
 
-url = 'https://gtfs.adelaidemetro.com.au/v1/realtime/vehicle_positions'
-
-def update_route_data(root_path):
+def update_data(root_path):
 
     # Only update if there is a version change
     version = requests.get('https://gtfs.adelaidemetro.com.au/v1/static/latest/version.txt').json()
@@ -22,7 +20,6 @@ def update_route_data(root_path):
         zip.extractall(root_path + '/services/data/')
 
 def get_route_data(root_path):
-    update_route_data(root_path)
     data = {}
 
     with open(root_path + '/services/data/routes.txt', newline='') as csvfile:
@@ -35,14 +32,16 @@ def get_route_data(root_path):
     
     return data
 
-
 def fetch_transport_data(root_path):
+    url = 'https://gtfs.adelaidemetro.com.au/v1/realtime/vehicle_positions'
     feed = gtfs_realtime_pb2.FeedMessage()
     response = requests.get(url)
     feed.ParseFromString(response.content)
     data = {
         "vehicles":[]
     }
+
+    update_data(root_path)
     route_data = get_route_data(root_path)
 
     for entity in feed.entity:
@@ -59,4 +58,5 @@ def fetch_transport_data(root_path):
                     
 
     return data
+
 

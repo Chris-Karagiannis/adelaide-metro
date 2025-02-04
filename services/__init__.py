@@ -1,1 +1,2 @@
 from .transport_service import fetch_transport_data
+from .trip_shape_service import get_shape_data

@@ -8,11 +8,21 @@ async function fetchData() {
     }
 }
 
+async function fetchShape(tripID, colour) {
+    try {
+        let response = await fetch(`/api/shapes/${tripID}`);
+        let data = await response.json();
+        processShapes(data, colour)
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
 function processData(transportData) {
 
     // Clear previous markers
     map.eachLayer(layer => {
-        if (layer instanceof L.Marker) {
+        if (layer instanceof L.Marker && layer !== selected.marker) {
             map.removeLayer(layer);
         }
     });
@@ -41,14 +51,51 @@ function processData(transportData) {
             <br>
             <sub>${date.toLocaleString('en-AU')}</sub>
         `)
+
+        // Marker popup with info
+        vehicle.bindPopup(`
+            <strong class="tooltip-route" style="background-color:#${transportData.vehicles[i].route_data.colour};">${transportData.vehicles[i].route}</strong> ${transportData.vehicles[i].route_data.name}
+            <br>
+            <sub>${date.toLocaleString('en-AU')}</sub>
+        `)
         
+        if (selected.tripID == transportData.vehicles[i].trip_id) {
+            vehicle.openPopup()
+        }
+
         // Click event
         vehicle.on('click', (e) => {
-            const zoom = map.getZoom() >= 16 ? map.getZoom() : 16;
-            map.setView(e.latlng, zoom);
+            
+            // Vehicle path
+            selected.tripID = transportData.vehicles[i].trip_id
+            fetchShape(transportData.vehicles[i].trip_id, transportData.vehicles[i])
         })
-
+               
     }
+}
+
+let selected = {
+    tripID: undefined,
+    line: undefined,
+}
+
+function adjust(color, amount) {
+    return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+}
+
+function processShapes(shape_data, vehicle_data) {
+    if (selected.line !== undefined){
+        map.removeLayer(selected.line);
+    }
+
+    const colour = adjust(`${vehicle_data.route_data.colour}`, 50)
+
+    selected.line = L.polyline(shape_data, {
+        color: colour,
+        opacity: 1,
+        weight: 8 
+    }).addTo(map);
+
 }
 
 // Fetch vehicle data
