@@ -11,6 +11,7 @@ def index():
 @app.route("/api/data")
 def api_data():
     if check_version_update(app.root_path):
+        global stops_data
         stops_data = get_stop_data(app.root_path)
 
     data = fetch_transport_data(app.root_path)

@@ -15,6 +15,8 @@ async function fetchShape(tripID, colour) {
         
         processShapes(data.shape, colour)
 
+        
+
         // Add stop markers
         for (let i = 0; i < data.stops.length; i++) {
             
@@ -22,15 +24,14 @@ async function fetchShape(tripID, colour) {
                 icon: new L.DivIcon({
                     iconSize: [40, 40],
                     className: "marker-container",
-                    html: `<i class="fa fa-flag fa-2x marker" aria-hidden="true" style="color: orange;"></i>
-                           <i class="fa fa-flag-o fa-2x marker" aria-hidden="true" ></i>`
+                    html: `<i class="fa fa-circle marker" aria-hidden="true" style="color: white;"></i>
+                           <i class="fa fa-circle-o marker" aria-hidden="true" ></i>`
                 })
             })
             .bindTooltip(`${data.stops[i].name}`)
-            .addTo(map))
+            .addTo(map))    
             
-            
-        }
+        }       
 
 
     } catch (error) {
