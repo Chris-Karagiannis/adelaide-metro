@@ -15,8 +15,6 @@ async function fetchShape(tripID, colour) {
         
         processShapes(data.shape, colour)
 
-        
-
         // Add stop markers
         for (let i = 0; i < data.stops.length; i++) {
             
@@ -29,7 +27,7 @@ async function fetchShape(tripID, colour) {
                 })
             })
             .bindTooltip(`${data.stops[i].name}`)
-            .addTo(map))    
+            .addTo(map))
             
         }       
 
@@ -63,7 +61,11 @@ function processData(transportData) {
 
         // Set colour of vehicle per route data
         document.getElementById(i).style.color = `#${transportData.vehicles[i].route_data.colour}`
-        
+       
+        if (selected.tripID !== transportData.vehicles[i].trip_id && selected.tripID !== undefined){
+            document.getElementById(i).parentElement.classList.add('blur')
+        }
+
         // Get date and time of last update of vehicle
         const date = new Date(transportData.vehicles[i].time * 1000)
 
@@ -74,23 +76,20 @@ function processData(transportData) {
             <sub>${date.toLocaleString('en-AU')}</sub>
         `)
 
-        // // Marker popup with info
-        // vehicle.bindPopup(`
-        //     <strong class="tooltip-route" style="background-color:#${transportData.vehicles[i].route_data.colour};">${transportData.vehicles[i].route}</strong> ${transportData.vehicles[i].route_data.name}
-        //     <br>
-        //     <sub>${date.toLocaleString('en-AU')}</sub>
-        // `)
-        
-        // if (selected.tripID == transportData.vehicles[i].trip_id) {
-        //     vehicle.openPopup()
-        // }
-
         // Click event
         vehicle.on('click', (e) => {
             
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker && !stops.includes(layer)) {
+                    layer._icon.classList.add('blur')
+                }
+            });
+            
+            e.target._icon.classList.remove('blur')
+
             // Select vehicle path
             selected.tripID = transportData.vehicles[i].trip_id
-            fetchShape(transportData.vehicles[i].trip_id, transportData.vehicles[i])
+            fetchShape(transportData.vehicles[i].trip_id)
         })
                
     }
@@ -107,8 +106,8 @@ function adjust(color, amount) {
     return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
 }
 
-function processShapes(shape_data, vehicle_data) {
-    
+function processShapes(shape_data) {   
+
     // Remove stop markers from previous selected
     for (let i = 0; i < stops.length; i++) {
         map.removeLayer(stops[i])
@@ -119,10 +118,9 @@ function processShapes(shape_data, vehicle_data) {
         map.removeLayer(selected.line);
     }
     
-    // Brighten colour
-    const colour = adjust(`${vehicle_data.route_data.colour}`, 75)
-    
+    // Make line    
     selected.line = L.polyline(shape_data, {
+
         color: 'blue',
         opacity: 1,
         weight: 8 
@@ -155,6 +153,12 @@ const map = L.map('map', {
 
 map.on('click', (e) => {
     if (selected.tripID !== undefined && selected.line !== undefined){
+
+        map.eachLayer(layer => {
+            if (layer instanceof L.Marker && !stops.includes(layer)) {
+                console.log(layer._icon.classList.remove('blur'))
+            }
+        });
 
         // Remove stop markers from previous selected
         for (let i = 0; i < stops.length; i++) {
