@@ -17,7 +17,19 @@ async function fetchShape(tripID, colour) {
 
         // Add stop markers
         for (let i = 0; i < data.stops.length; i++) {
-            stops.push(L.marker([data.stops[i].lat, data.stops[i].lon]).addTo(map))
+            
+            stops.push(L.marker([data.stops[i].lat, data.stops[i].lon], {
+                icon: new L.DivIcon({
+                    iconSize: [40, 40],
+                    className: "marker-container",
+                    html: `<i class="fa fa-flag fa-2x marker" aria-hidden="true" style="color: orange;"></i>
+                           <i class="fa fa-flag-o fa-2x marker" aria-hidden="true" ></i>`
+                })
+            })
+            .bindTooltip(`${data.stops[i].name}`)
+            .addTo(map))
+            
+            
         }
 
 
@@ -44,7 +56,8 @@ function processData(transportData) {
             iconSize: [40, 40],
             className: "marker-container",
             html: `<i class="fa fa-circle fa-2x marker" id="${i}" aria-hidden="true"></i>
-                    <i class="fa fa-arrow-up marker" style="color:white; transform: rotate(${transportData.vehicles[i].bearing}deg)" id="${i}" aria-hidden="true"></i>`
+                   <i class="fa fa-circle-o fa-2x marker" aria-hidden="true"></i>
+                   <i class="fa fa-arrow-up marker" style="color:white; transform: rotate(${transportData.vehicles[i].bearing}deg)" id="${i}" aria-hidden="true"></i>`
         })}).addTo(map);
 
         // Set colour of vehicle per route data
@@ -60,16 +73,16 @@ function processData(transportData) {
             <sub>${date.toLocaleString('en-AU')}</sub>
         `)
 
-        // Marker popup with info
-        vehicle.bindPopup(`
-            <strong class="tooltip-route" style="background-color:#${transportData.vehicles[i].route_data.colour};">${transportData.vehicles[i].route}</strong> ${transportData.vehicles[i].route_data.name}
-            <br>
-            <sub>${date.toLocaleString('en-AU')}</sub>
-        `)
+        // // Marker popup with info
+        // vehicle.bindPopup(`
+        //     <strong class="tooltip-route" style="background-color:#${transportData.vehicles[i].route_data.colour};">${transportData.vehicles[i].route}</strong> ${transportData.vehicles[i].route_data.name}
+        //     <br>
+        //     <sub>${date.toLocaleString('en-AU')}</sub>
+        // `)
         
-        if (selected.tripID == transportData.vehicles[i].trip_id) {
-            vehicle.openPopup()
-        }
+        // if (selected.tripID == transportData.vehicles[i].trip_id) {
+        //     vehicle.openPopup()
+        // }
 
         // Click event
         vehicle.on('click', (e) => {
@@ -106,11 +119,11 @@ function processShapes(shape_data, vehicle_data) {
     }
     
     // Brighten colour
-    const colour = adjust(`${vehicle_data.route_data.colour}`, 50)
+    const colour = adjust(`${vehicle_data.route_data.colour}`, 75)
     
     selected.line = L.polyline(shape_data, {
-        color: colour,
-        opacity: 0.75,
+        color: 'blue',
+        opacity: 1,
         weight: 8 
     }).addTo(map);
     
