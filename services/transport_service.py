@@ -34,13 +34,30 @@ def get_route_data(root_path):
     
     return data
 
+def get_stop_data(root_path):
+    stop_data = {}
+
+    # Get stops
+    with open(root_path + '/services/data/stops.txt', newline='') as csvfile:
+        for row in csv.DictReader(csvfile):
+            stop_data[row['stop_id']] = {
+                "name": row['stop_name'],
+                "lat": row['stop_lat'],
+                "lon": row['stop_lon'],
+                "desc": row['stop_desc']
+            }
+            
+    return stop_data  
+
 def fetch_transport_data(root_path):
     url = 'https://gtfs.adelaidemetro.com.au/v1/realtime/vehicle_positions'
     feed = gtfs_realtime_pb2.FeedMessage()
     response = requests.get(url)
     feed.ParseFromString(response.content)
+
     data = {
-        "vehicles":[]
+        "vehicles":[],
+        "stops": get_stop_data(root_path)
     }
 
     update_data(root_path)

@@ -8,17 +8,17 @@ async function fetchData() {
     }
 }
 
-async function fetchShape(tripID, colour) {
+async function fetchShape(tripID, transportData) {
     try {
         let response = await fetch(`/api/shapes/${tripID}`);
         let data = await response.json();
         
-        processShapes(data.shape, colour)
+        processShapes(data.shape)
 
         // Add stop markers
         for (let i = 0; i < data.stops.length; i++) {
-            
-            stops.push(L.marker([data.stops[i].lat, data.stops[i].lon], {
+            let stop = transportData.stops[data.stops[i]]        
+            stops.push(L.marker([stop.lat, stop.lon], {
                 icon: new L.DivIcon({
                     iconSize: [40, 40],
                     className: "marker-container",
@@ -26,7 +26,7 @@ async function fetchShape(tripID, colour) {
                            <i class="fa fa-circle-o marker" aria-hidden="true" ></i>`
                 })
             })
-            .bindTooltip(`${data.stops[i].name}`)
+            .bindTooltip(`${stop.name}`)
             .addTo(map))
             
         }       
@@ -89,7 +89,7 @@ function processData(transportData) {
 
             // Select vehicle path
             selected.tripID = transportData.vehicles[i].trip_id
-            fetchShape(transportData.vehicles[i].trip_id)
+            fetchShape(transportData.vehicles[i].trip_id, transportData)
         })
                
     }
