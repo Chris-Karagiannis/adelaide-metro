@@ -2,13 +2,14 @@ from google.transit import gtfs_realtime_pb2
 import requests, zipfile, io, csv, os.path
 
 def update_data(root_path):
+    
     # Get new data if version numbers do not match
-    if check_version_update(root_path):
-        response = requests.get('https://gtfs.adelaidemetro.com.au/v1/static/latest/google_transit.zip')
-        zip = zipfile.ZipFile(io.BytesIO(response.content))
-        zip.extractall(root_path + '/services/data/')
+    response = requests.get('https://gtfs.adelaidemetro.com.au/v1/static/latest/google_transit.zip')
+    zip = zipfile.ZipFile(io.BytesIO(response.content))
+    zip.extractall(root_path + '/services/data/')
 
 def check_version_update(root_path):
+
     # Only update if there is a version change
     version = requests.get('https://gtfs.adelaidemetro.com.au/v1/static/latest/version.txt').json()
     feed_version = -1
@@ -49,7 +50,7 @@ def get_stop_data(root_path):
             
     return stop_data  
 
-def fetch_transport_data(root_path):
+def fetch_transport_data(root_path, stop_data, route_data):
     url = 'https://gtfs.adelaidemetro.com.au/v1/realtime/vehicle_positions'
     feed = gtfs_realtime_pb2.FeedMessage()
     response = requests.get(url)
@@ -57,11 +58,8 @@ def fetch_transport_data(root_path):
 
     data = {
         "vehicles":[],
-        "stops": get_stop_data(root_path)
+        "stops": stop_data
     }
-
-    update_data(root_path)
-    route_data = get_route_data(root_path)
 
     for entity in feed.entity:
         if entity.HasField('vehicle'):

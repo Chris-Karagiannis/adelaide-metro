@@ -2,4 +2,4 @@ Adelaide Metro GTFS Release Notes
 
 General Amendments:
 
-1)	Updated agency.txt to highlight the change of operator/agency name.
+1)	Added LIV Golf shuttle bus services for 14-16 February.
